@@ -32,23 +32,26 @@ extract_vectors <- function(long_labels) {
   return(list(ii = ii, jj = jj, yy = yy))
 }
 
-#' A Cat Function
+#' Fit coding models via an EM algorithm
 #'
-#' This function allows you to express your love of cats.
-#' @param love Do you love cats? Defaults to TRUE.
-#' @keywords cats
+#' Estimates parameters of either a BACE, MACE, or DS coding model using coder-object labels
+#' @param long_labels should be a data frame with columns:
+#' \itemize{
+#'   \item{"ii"}{object index}
+#'   \item{"jj"}{coder index}
+#'   \item{"yy"}{the coder's label for that object}
+#' }
+#' because long_labels is in long format, there shouldn't be any missing data
+#' @param model one of c("BACE", "DS", "MACE")
+#' @param max_iter maximum number of iterations for the EM algorithm; I would advise not touching this unless you know what you are doing.
+#' @param tol the algorithm is terminated once the change in average log likelihood (average taken at the object level) is both positive and less than tol.
+#' @param verbose if TRUE, the function will print status updates during the EM algorithm.
+#' @keywords coding
 #' @import matrixStats
 #' @export
-#' @examples
-#' cat_function()
 fit_em <- function(long_labels, model = "BACE",
-  max_iter = 1e3, tol = 1e-8,
+  max_iter = 1e3, tol = 1e-6,
   verbose = FALSE) {
-  # long_labels should be a data frame with columns:
-  # ii: object index
-  # jj: coder index
-  # yy: coder label
-  # because it's in long format, there shouldn't be any missing data
 
   vectors <- extract_vectors(long_labels)
   ii <- vectors$ii
